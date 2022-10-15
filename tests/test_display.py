@@ -1,5 +1,5 @@
 import re
-from unittest.mock import ANY, Mock, call, patch
+from unittest.mock import ANY, Mock, patch
 
 from gl_search.display import MatchFinder, print_results
 from gl_search.models import RepoResult, SearchEntryResult
