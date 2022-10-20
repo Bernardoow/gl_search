@@ -11,11 +11,13 @@ class SearchParams(BaseModel):
     extension: Optional[str]
     filename: Optional[str]
     path: Optional[str]
+    max_random_time_for_sleep: int
 
 
 class SearchRepoParams(BaseModel):
     repo_id: int
-    search: str
+    search: str = Field(alias="search_code_input")
+    max_random_time_for_sleep: int
     extension: Optional[str] = None
     filename: Optional[str] = None
     path: Optional[str] = None

@@ -26,6 +26,7 @@ def search_cli() -> None:
     default=["internal", "public", "private"],
     help="repositories visibility",
 )
+@click.option("-xdr", "--max-delay-request", default=5, type=int, help="max delay request")
 @click.argument("search_code_input")
 def search_command(
     groups: Optional[str],
@@ -35,6 +36,7 @@ def search_command(
     extension: Optional[str],
     filename: Optional[str],
     path: Optional[str],
+    max_delay_request: int,
 ) -> None:
     """Search command."""
     results: list[dict[str, str]] = search(
@@ -46,6 +48,7 @@ def search_command(
             extension=extension,
             filename=filename,
             path=path,
+            max_random_time_for_sleep=max_delay_request,
         )
     )
 

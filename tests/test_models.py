@@ -14,5 +14,7 @@ class TestSearchRepoParams:
     )
     def test_search_with_params(self, params: str, expected: str):
 
-        search_params = SearchRepoParams(repo_id=1, search="test", **params)
+        search_params = SearchRepoParams(
+            repo_id=1, search_code_input="test", max_random_time_for_sleep=5, **params
+        )
         assert search_params.search_with_params == expected
