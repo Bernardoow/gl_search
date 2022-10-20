@@ -1,5 +1,6 @@
 import time
 from http import HTTPStatus
+from random import uniform
 from typing import Callable, Final
 
 import requests
@@ -11,7 +12,7 @@ from .models import RequestDescribe
 def retrieve_data(
     request: RequestDescribe,
     transform_data: Callable = lambda value: value,
-    time_for_sleep: float = 0,
+    max_random_time_for_sleep: float = 0,
 ) -> list:
     count: int = 0
     data_list: list[dict] = []
@@ -33,6 +34,6 @@ def retrieve_data(
         except KeyError:
             break
 
-        time.sleep(time_for_sleep)
+        time.sleep(uniform(0, max_random_time_for_sleep))
 
     return data_list

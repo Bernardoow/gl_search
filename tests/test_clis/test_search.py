@@ -47,6 +47,7 @@ class TestSearch:
                 max_workers=max_workers,
                 visibility=[visibility_one, visibility_two],
                 search_code_input=search_code,
+                max_random_time_for_sleep=5,
             )
         )
         mock_print_results.assert_called_once()

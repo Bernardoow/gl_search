@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gl_search"
-version = "0.1.0"
+version = "0.2.0"
 description = "Script to help search code in self-hosted gitlab"
 authors = ["Bernardo Gomes <bgomesdeabreu@gmail.com>"]
 maintainers = ["Bernardo Gomes <bgomesdeabreu@gmail.com>"]

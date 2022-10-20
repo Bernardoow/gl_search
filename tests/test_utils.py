@@ -1,5 +1,6 @@
 from copy import deepcopy
 from http import HTTPStatus
+from random import uniform
 from unittest.mock import ANY, Mock, call, patch
 
 import pytest
@@ -12,13 +13,17 @@ from .utils import build_response
 
 
 class TestRetrieveData:
+    @patch("gl_search.utils.uniform")
     @patch("time.sleep")
     @patch("requests.get")
-    def test_it_should_call_url(self, mock_request_get: Mock, mock_time_sleep: Mock) -> None:
+    def test_it_should_call_url(
+        self, mock_request_get: Mock, mock_time_sleep: Mock, mock_uniform: Mock
+    ) -> None:
         url = "https://example.com/"
         url_2 = f"{url}page=2"
 
-        time_for_sleep = 10
+        max_random_time_for_sleep = 10
+        uniform_response = uniform(0, max_random_time_for_sleep)
 
         response = build_response(HTTPStatus.OK, {})
         response._count_links = 0
@@ -26,17 +31,18 @@ class TestRetrieveData:
 
         response_2 = build_response(HTTPStatus.OK, {})
         mock_request_get.side_effect = [response, response_2]
+        mock_uniform.return_value = uniform_response
         request_describe = RequestDescribe(url=url)
 
-        retrieve_data(deepcopy(request_describe), lambda: None, time_for_sleep)
+        retrieve_data(deepcopy(request_describe), lambda: None, max_random_time_for_sleep)
 
         assert list(mock_request_get.call_args_list) == unordered(
             [
-                call(request_describe.url, params={}, headers=ANY, timeout=time_for_sleep),
-                call(url_2, params={}, headers=ANY, timeout=time_for_sleep),
+                call(request_describe.url, params={}, headers=ANY, timeout=max_random_time_for_sleep),
+                call(url_2, params={}, headers=ANY, timeout=max_random_time_for_sleep),
             ]
         )
-        mock_time_sleep.assert_called_once_with(time_for_sleep)
+        mock_time_sleep.assert_called_once_with(uniform_response)
 
     @patch("requests.get")
     def test_it_should_raise_exception_when_get_invalid_status_code(self, mock_requests_get: Mock) -> None:

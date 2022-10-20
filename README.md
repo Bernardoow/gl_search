@@ -64,6 +64,7 @@ Options:
   -mw, --max-workers INTEGER      number of parallel requests
   -v, --visibility [internal|public|private]
                                   repositories visibility
+  -xdr, --max-delay-request INTEGER
   --help                          Show this message and exit.
 ```
 
