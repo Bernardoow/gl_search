@@ -37,6 +37,7 @@ gl-search setup-gitlab-address <self-hosted-gitlab-address>
 ## Where I get gitlab token?
 
 You can get on following link [gitlab-token](https://gitlab.com/-/profile/personal_access_tokens)
+The TOKEN must be generated with scope read_api.
 
 ## Why this lib was built?
 
@@ -65,6 +66,7 @@ Options:
   -v, --visibility [internal|public|private]
                                   repositories visibility
   -xdr, --max-delay-request INTEGER
+  -d, --debug                     Debug :: show urls called.
   --help                          Show this message and exit.
 ```
 
