@@ -1,3 +1,4 @@
+import logging
 from unittest.mock import Mock, patch
 
 from click.testing import CliRunner
@@ -51,3 +52,20 @@ class TestSearch:
             )
         )
         mock_print_results.assert_called_once()
+
+    @patch("gl_search.clis.search.logging")
+    @patch("gl_search.clis.search.print_results", Mock())
+    @patch("gl_search.clis.search.search", Mock())
+    def test_debug_param(self, mock_logging: Mock) -> None:
+        mock_get_logger = Mock()
+        mock_logging.DEBUG = logging.DEBUG
+        mock_logging.getLogger.return_value = mock_get_logger
+        search_code = "test"
+
+        runner = CliRunner()
+        params = [search_code, "-d"]
+        result = runner.invoke(search_command, params)
+        assert result.exit_code == 0
+
+        mock_get_logger.setLevel.assert_called_with(logging.DEBUG)
+        mock_logging.getLogger.assert_called_with("gl_search")
