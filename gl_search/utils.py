@@ -1,3 +1,4 @@
+import logging
 import time
 from http import HTTPStatus
 from random import uniform
@@ -6,7 +7,10 @@ from typing import Callable, Final
 import requests
 
 from .config import settings
+from .display import process_user_feedback
 from .models import RequestDescribe
+
+logger = logging.getLogger(__name__)
 
 
 def retrieve_data(
@@ -19,6 +23,10 @@ def retrieve_data(
     HEADERS: Final[dict[str, str]] = {"PRIVATE-TOKEN": settings.GITLAB_PRIVATE_TOKEN}
     while True or count < settings.MAX_DEEP_SEARCH:
         count += 1
+
+        if logger.isEnabledFor(logging.DEBUG):
+            process_user_feedback.progress.log("URL: {} PARAMS: {}".format(request.url, request.params))
+
         response: requests.Response = requests.get(
             request.url, params=request.params, headers=HEADERS, timeout=10
         )

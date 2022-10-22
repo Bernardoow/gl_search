@@ -87,7 +87,7 @@ class TestSearchInRepo:
 
         request_describe = RequestDescribe(
             url=f"https://gitlab.com/api/v4/projects/{repo_id}/search",
-            params={"scope": "blobs", "search": search_params.search_code_input},
+            params={"scope": "blobs", "search": search_params.search_code_input, "per_page": "100"},
         )
         mock_retrieve_data.assert_called_with(
             request_describe, ANY, max_random_time_for_sleep=search_params.max_random_time_for_sleep

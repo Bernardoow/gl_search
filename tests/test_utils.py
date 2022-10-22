@@ -1,3 +1,4 @@
+import contextlib
 from copy import deepcopy
 from http import HTTPStatus
 from random import uniform
@@ -50,3 +51,19 @@ class TestRetrieveData:
 
         with pytest.raises(Exception, match=r"invalid status code"):
             retrieve_data(RequestDescribe(url="https://example.com/"), lambda: None, 10)
+
+    @patch("gl_search.utils.process_user_feedback")
+    @patch("gl_search.utils.logger")
+    @patch("requests.get")
+    def test_it_should_log(
+        self, mock_requests_get: Mock, mock_logger: Mock, mock_process_user_feedback: Mock
+    ) -> None:
+        mock_requests_get.return_value = build_response(HTTPStatus.BAD_REQUEST, {})
+
+        mock_logger.isEnabledFor.return_value = True
+
+        url = "https://example.com/"
+        with contextlib.suppress(Exception):
+            retrieve_data(RequestDescribe(url=url), lambda: None, 10)
+
+        mock_process_user_feedback.progress.log.assert_called_with("URL: {} PARAMS: {}".format(url, dict()))
