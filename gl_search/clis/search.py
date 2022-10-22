@@ -2,7 +2,7 @@ from typing import Optional
 
 import click
 
-from gl_search.display import print_results
+from gl_search.display import print_results, process_user_feedback
 from gl_search.models import SearchParams
 from gl_search.search import search
 
@@ -39,17 +39,19 @@ def search_command(
     max_delay_request: int,
 ) -> None:
     """Search command."""
-    results: list[dict[str, str]] = search(
-        SearchParams(
-            groups=groups,
-            search_code_input=search_code_input,
-            max_workers=max_workers,
-            visibility=visibility,
-            extension=extension,
-            filename=filename,
-            path=path,
-            max_random_time_for_sleep=max_delay_request,
+
+    with process_user_feedback.progress:
+        results: list[dict[str, str]] = search(
+            SearchParams(
+                groups=groups,
+                search_code_input=search_code_input,
+                max_workers=max_workers,
+                visibility=visibility,
+                extension=extension,
+                filename=filename,
+                path=path,
+                max_random_time_for_sleep=max_delay_request,
+            )
         )
-    )
 
     print_results(results, search_code_input)
