@@ -48,16 +48,14 @@ class ProcessUserFeedback:
     _tasks: dict[str, TaskID]
 
     def __init__(self):
-        # self.progress = Progress(
-        #     SpinnerColumn(),
-        #     TextColumn("[progress.description]{task.description}"),
-        #     BarColumn(),
-        #     TaskProgressColumn(),
-        #     MofNCompleteColumn(),
-        # )
-        from unittest.mock import MagicMock
+        self.progress = Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            MofNCompleteColumn(),
+        )
 
-        self.progress = MagicMock()
         self._tasks = dict()
         self._add_tasks()
 
