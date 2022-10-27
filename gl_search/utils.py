@@ -12,6 +12,9 @@ from .models import RequestDescribe
 
 logger = logging.getLogger(__name__)
 
+request_session = requests.Session()
+request_session.headers.update({"PRIVATE-TOKEN": settings.GITLAB_PRIVATE_TOKEN})
+
 
 def retrieve_data(
     request: RequestDescribe,
@@ -20,16 +23,13 @@ def retrieve_data(
 ) -> list:
     count: int = 0
     data_list: list[dict] = []
-    HEADERS: Final[dict[str, str]] = {"PRIVATE-TOKEN": settings.GITLAB_PRIVATE_TOKEN}
     while True or count < settings.MAX_DEEP_SEARCH:
         count += 1
 
         if logger.isEnabledFor(logging.DEBUG):
             process_user_feedback.progress.log("URL: {} PARAMS: {}".format(request.url, request.params))
 
-        response: requests.Response = requests.get(
-            request.url, params=request.params, headers=HEADERS, timeout=10
-        )
+        response: requests.Response = request_session.get(request.url, params=request.params, timeout=10)
 
         if not response.status_code == HTTPStatus.OK:
             raise Exception(f"invalid status code {response.status_code}")

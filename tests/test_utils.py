@@ -16,7 +16,7 @@ from .utils import build_response
 class TestRetrieveData:
     @patch("gl_search.utils.uniform")
     @patch("time.sleep")
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_call_url(
         self, mock_request_get: Mock, mock_time_sleep: Mock, mock_uniform: Mock
     ) -> None:
@@ -39,13 +39,13 @@ class TestRetrieveData:
 
         assert list(mock_request_get.call_args_list) == unordered(
             [
-                call(request_describe.url, params={}, headers=ANY, timeout=max_random_time_for_sleep),
-                call(url_2, params={}, headers=ANY, timeout=max_random_time_for_sleep),
+                call(request_describe.url, params={}, timeout=max_random_time_for_sleep),
+                call(url_2, params={}, timeout=max_random_time_for_sleep),
             ]
         )
         mock_time_sleep.assert_called_once_with(uniform_response)
 
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_raise_exception_when_get_invalid_status_code(self, mock_requests_get: Mock) -> None:
         mock_requests_get.return_value = build_response(HTTPStatus.BAD_REQUEST, {})
 

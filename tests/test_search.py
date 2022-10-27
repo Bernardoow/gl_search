@@ -93,7 +93,7 @@ class TestSearchInRepo:
             request_describe, ANY, max_random_time_for_sleep=search_params.max_random_time_for_sleep
         )
 
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_return_sentry_entry_result_list(
         self, mock_requests_get: Mock, search_params: SearchParams
     ) -> None:
@@ -189,7 +189,7 @@ class TestRetrieveRepositoriesBy:
             max_random_time_for_sleep=search_params.max_random_time_for_sleep,
         )
 
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_return_repo_item(self, mock_requests_get: Mock, search_params: SearchParams) -> None:
         mock_requests_get.return_value = build_response(
             HTTPStatus.OK,
@@ -226,7 +226,7 @@ class TestRetrieveGroupsIds:
             max_random_time_for_sleep=search_params.max_random_time_for_sleep,
         )
 
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_return_int_list(self, mock_requests_get: Mock, search_params: SearchParams) -> None:
         mock_requests_get.return_value = build_response(HTTPStatus.OK, [{"id": 1}, {"id": 2}])
         response: list[int] = _retrieve_groups_ids(search_params)
