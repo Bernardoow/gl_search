@@ -2,7 +2,7 @@ import contextlib
 from copy import deepcopy
 from http import HTTPStatus
 from random import uniform
-from unittest.mock import ANY, Mock, call, patch
+from unittest.mock import Mock, call, patch
 
 import pytest
 from pytest_unordered import unordered
@@ -16,7 +16,7 @@ from .utils import build_response
 class TestRetrieveData:
     @patch("gl_search.utils.uniform")
     @patch("time.sleep")
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_call_url(
         self, mock_request_get: Mock, mock_time_sleep: Mock, mock_uniform: Mock
     ) -> None:
@@ -39,18 +39,30 @@ class TestRetrieveData:
 
         assert list(mock_request_get.call_args_list) == unordered(
             [
-                call(request_describe.url, params={}, headers=ANY, timeout=max_random_time_for_sleep),
-                call(url_2, params={}, headers=ANY, timeout=max_random_time_for_sleep),
+                call(request_describe.url, params={}, timeout=max_random_time_for_sleep),
+                call(url_2, params={}, timeout=max_random_time_for_sleep),
             ]
         )
         mock_time_sleep.assert_called_once_with(uniform_response)
 
-    @patch("requests.get")
+    @patch("gl_search.utils.request_session.get")
     def test_it_should_raise_exception_when_get_invalid_status_code(self, mock_requests_get: Mock) -> None:
         mock_requests_get.return_value = build_response(HTTPStatus.BAD_REQUEST, {})
 
         with pytest.raises(Exception, match=r"invalid status code"):
             retrieve_data(RequestDescribe(url="https://example.com/"), lambda: None, 10)
+
+    @patch("gl_search.utils.process_user_feedback")
+    @patch("gl_search.utils.request_session.get")
+    def test_it_should_raise_exception_when_get_too_many_requests_error(
+        self, mock_requests_get: Mock, mock_process_user_feedback: Mock
+    ) -> None:
+        mock_requests_get.return_value = build_response(HTTPStatus.TOO_MANY_REQUESTS, {})
+        url = "https://example.com/"
+        retrieve_data(RequestDescribe(url=url), lambda: None, 10)
+        mock_process_user_feedback.progress.print.assert_called_with(
+            "URL: {} PARAMS: {} HttpStatus Code 429 SKIP this search".format(url, dict())
+        )
 
     @patch("gl_search.utils.process_user_feedback")
     @patch("gl_search.utils.logger")
