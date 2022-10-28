@@ -2,9 +2,11 @@ import logging
 import time
 from http import HTTPStatus
 from random import uniform
-from typing import Callable, Final
+from typing import Callable
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
 from .config import settings
 from .display import process_user_feedback
@@ -12,7 +14,23 @@ from .models import RequestDescribe
 
 logger = logging.getLogger(__name__)
 
+retries = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[
+        HTTPStatus.TOO_MANY_REQUESTS,
+        HTTPStatus.BAD_GATEWAY,
+        HTTPStatus.SERVICE_UNAVAILABLE,
+        HTTPStatus.GATEWAY_TIMEOUT,
+    ],
+    raise_on_status=False,
+)
+
 request_session = requests.Session()
+
+request_session.mount("http://", HTTPAdapter(max_retries=retries))
+request_session.mount("https://", HTTPAdapter(max_retries=retries))
+
 request_session.headers.update({"PRIVATE-TOKEN": settings.GITLAB_PRIVATE_TOKEN})
 
 

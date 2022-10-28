@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change to use session.get instead of request.get.
+- Add Retry to HttpStatus response 429, 502, 503 and 504.
 
 ## [0.3.0] - 2022-10-22
 
