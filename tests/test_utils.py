@@ -2,7 +2,7 @@ import contextlib
 from copy import deepcopy
 from http import HTTPStatus
 from random import uniform
-from unittest.mock import ANY, Mock, call, patch
+from unittest.mock import Mock, call, patch
 
 import pytest
 from pytest_unordered import unordered
