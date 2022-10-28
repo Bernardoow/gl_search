@@ -53,6 +53,18 @@ class TestRetrieveData:
             retrieve_data(RequestDescribe(url="https://example.com/"), lambda: None, 10)
 
     @patch("gl_search.utils.process_user_feedback")
+    @patch("gl_search.utils.request_session.get")
+    def test_it_should_raise_exception_when_get_too_many_requests_error(
+        self, mock_requests_get: Mock, mock_process_user_feedback: Mock
+    ) -> None:
+        mock_requests_get.return_value = build_response(HTTPStatus.TOO_MANY_REQUESTS, {})
+        url = "https://example.com/"
+        retrieve_data(RequestDescribe(url=url), lambda: None, 10)
+        mock_process_user_feedback.progress.print.assert_called_with(
+            "URL: {} PARAMS: {} HttpStatus Code 429 SKIP this search".format(url, dict())
+        )
+
+    @patch("gl_search.utils.process_user_feedback")
     @patch("gl_search.utils.logger")
     @patch("requests.get")
     def test_it_should_log(

@@ -49,7 +49,12 @@ def retrieve_data(
 
         response: requests.Response = request_session.get(request.url, params=request.params, timeout=10)
 
-        if not response.status_code == HTTPStatus.OK:
+        if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
+            process_user_feedback.progress.print(
+                "URL: {} PARAMS: {} HttpStatus Code 429 SKIP this search".format(request.url, request.params)
+            )
+            break
+        elif not response.status_code == HTTPStatus.OK:
             raise Exception(f"invalid status code {response.status_code}")
 
         data_list.extend([transform_data(data) for data in response.json()])
