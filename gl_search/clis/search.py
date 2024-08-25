@@ -9,8 +9,7 @@ from gl_search.search import search
 
 
 @click.group()
-def search_cli() -> None:
-    ...
+def search_cli() -> None: ...
 
 
 @search_cli.command(name="search")
