@@ -7,8 +7,7 @@ from gl_search.config import BLOCK_SETTINGS_NAME, SETTINGS_FILE_PATH
 
 
 @click.group("settings")
-def config_cli() -> None:
-    ...
+def config_cli() -> None: ...
 
 
 def _load_settings(file_path: str) -> dict[str, Any]:
